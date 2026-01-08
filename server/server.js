@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
             velocity: 0,
             score: 0,
             isAlive: true,
-            color: getRandomColor() // Assign a color for name tags
+            color: getRandomColor()
         };
 
         if (!games[roomName].interval) {
@@ -70,7 +70,6 @@ io.on('connection', (socket) => {
         if (room && games[room]) {
             delete games[room].players[socket.id];
             
-            // If room is empty, clean it up
             const roomObj = io.sockets.adapter.rooms.get(room);
             if (!roomObj || roomObj.size === 0) {
                 clearInterval(games[room].interval);
@@ -92,11 +91,10 @@ function createNewGame() {
 }
 
 function startGameLoop(roomName) {
-    // UPDATED: Running at 60 FPS (approx 16ms)
+
     const intervalId = setInterval(() => {
         const gameState = games[roomName];
 
-        // Safety check if game was deleted
         if (!gameState) {
             clearInterval(intervalId);
             return;
@@ -121,12 +119,11 @@ function startGameLoop(roomName) {
 }
 
 function runGame(gameState) {
-    const HEIGHT = 600; // Match canvas height
+    const HEIGHT = 600;
     const WIDTH = 800;
     const PIPE_WIDTH = 50;
-    const PIPE_GAP = 160; // Slightly wider for better gameplay
+    const PIPE_GAP = 160;
     
-    // Physics tuned for 60 FPS
     const GRAVITY = 0.35; 
 
     updatePipes(gameState, WIDTH, HEIGHT, PIPE_WIDTH, PIPE_GAP);
@@ -136,18 +133,15 @@ function runGame(gameState) {
         
         if (!player.isAlive) continue;
 
-        // Apply Gravity
         player.velocity += GRAVITY;
         player.y += player.velocity;
 
         
-        // 1. Ground/Ceiling
         if (player.y + 25 > HEIGHT || player.y < 0) {
             killPlayer(gameState, playerId);
             continue;
         }
 
-        // 2. Pipes
         const playerHitbox = { x: player.x + 10, y: player.y + 10, w: 25, h: 25 }; // Shrink hitbox slightly for fairness
 
         for (const pipe of gameState.pipes) {
@@ -162,8 +156,6 @@ function runGame(gameState) {
                 playerHitbox.x < pipe.x + PIPE_WIDTH &&
                 playerHitbox.x + playerHitbox.w > pipe.x
             ) {
-                // We are within the horizontal area of the pipe
-                // Check vertical collision (Top pipe OR Bottom pipe)
                 if (
                     playerHitbox.y < pipe.topHeight || 
                     playerHitbox.y + playerHitbox.h > pipe.topHeight + PIPE_GAP
@@ -178,26 +170,22 @@ function runGame(gameState) {
 }
 
 function updatePipes(gameState, width, height, pipeWidth, pipeGap) {
-    // Spawn pipe every 100 frames (approx 1.5 seconds at 60fps)
     if (gameState.frameCount % 100 === 0) {
-        // Random height for the TOP pipe
         const minPipe = 50;
         const maxPipe = height - pipeGap - minPipe;
         const topHeight = Math.floor(Math.random() * (maxPipe - minPipe + 1)) + minPipe;
 
         gameState.pipes.push({
             x: width,
-            topHeight: topHeight, // The bottom Y coordinate of the top pipe
+            topHeight: topHeight,
             scoredBy: {}
         });
     }
 
-    // Move pipes
     for (const pipe of gameState.pipes) {
         pipe.x -= 3;
     }
 
-    // Remove off-screen pipes
     gameState.pipes = gameState.pipes.filter(pipe => pipe.x + pipeWidth > 0);
 }
 
