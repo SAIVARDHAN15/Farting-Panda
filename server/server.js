@@ -215,7 +215,7 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-const PORT = 5500;
+const PORT = process.env.PORT || 5500;
 http.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
