@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu-overlay">
+        <div class="menu-box"> 
+            <input type="text" id="username" placeholder="Enter Nickname" maxlength="12" autocomplete="off">
+            
+            <div class="button-group">
+                <button id="btn-offline" class="btn secondary">Play Offline</button>
+                <button id="btn-online" class="btn primary">Play Online</button>
+            </div>
+            
+            <p id="status-msg">Ready to fly.</p>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

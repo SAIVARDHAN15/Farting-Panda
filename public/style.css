@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Fredoka One', cursive; /* Fun, round font */
+}
+
+body {
+    background: #222;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ---------- LOGIN SCREEN ---------- */
+#menu-overlay {
+    position: fixed;
+    inset: 0;
+    /* Use a nice gradient if image fails, or overlay on image */
+    background: linear-gradient(135deg, rgba(112, 197, 206, 0.8), rgba(0, 0, 0, 0.8)), url("assets/login-bg.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.5s ease;
+}
+
+.menu-box {
+    background: rgba(255, 255, 255, 0.15); /* Glass effect */
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    width: 360px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.menu-box h1 {
+    /* Assuming logo.png is transparent */
+    background: url("assets/logo.png") center/contain no-repeat;
+    height: 100px;
+    width: 100%;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+}
+
+#username {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0 20px;
+    border-radius: 50px;
+    border: none;
+    font-size: 18px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+#username:focus {
+    transform: scale(1.02);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    flex-direction: column; /* Stack buttons for better mobile view */
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.primary {
+    background: linear-gradient(45deg, #4CAF50, #81C784);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.secondary {
+    background: linear-gradient(45deg, #FF9800, #FFB74D);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+#status-msg {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    min-height: 20px;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---------- GAME ---------- */
+#game-container {
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    line-height: 0; /* Remove gap below canvas */
+}
+
+canvas {
+    display: block;
+    background: #70c5ce; 
+}

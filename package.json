@@ -1,0 +1,21 @@
+{
+  "name": "flappy-bird",
+  "version": "1.0.0",
+  "main": "flappybird.js",
+ "scripts": {
+  "start": "node server/server.js",
+  "dev": "nodemon server/server.js"
+  },
+  
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
