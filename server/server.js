@@ -55,12 +55,11 @@ io.on('connection', (socket) => {
         console.log(`User joined: ${data.username} in ${roomName}`);
     });
 
-    socket.on('flap', () => {
+    socket.on('fart', () => {
         const room = socket.myRoom;
         if (!room) return;
         const player = games[room].players[socket.id];
         if (player && player.isAlive) {
-            console.log(`Flap from ${player.username}`);
             player.velocity = -7; 
         }
     });

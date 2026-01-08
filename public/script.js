@@ -67,14 +67,14 @@ function initGame(mode) {
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && socket) {
         e.preventDefault();
-        socket.emit('flap');
+        socket.emit('fart');
     }
 });
 
 document.addEventListener('touchstart', (e) => {
     if (socket) {
         e.preventDefault();
-        socket.emit('flap');
+        socket.emit('fart');
     }
 }, { passive: false });
 
