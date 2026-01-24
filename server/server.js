@@ -35,6 +35,7 @@ io.on('connection', (socket) => {
         if (!games[roomName]) {
             games[roomName] = createNewGame();
         }
+        games[roomName].mode = data.mode;
 
         // Initialize player
         games[roomName].players[socket.id] = {
@@ -53,6 +54,25 @@ io.on('connection', (socket) => {
         }
 
         console.log(`User joined: ${data.username} in ${roomName}`);
+    });
+
+    socket.on('restartGame', () => {
+        const room = socket.myRoom;
+        if (games[room]) {
+            games[room].pipes = [];
+            games[room].frameCount = 0;
+
+            games[room].players[socket.id] = {
+                id: socket.id,
+                username: socket.username,
+                x: 100,
+                y: 200,
+                velocity: 0,
+                score: 0,
+                isAlive: true,
+                color: getRandomColor()
+            };
+        }
     });
 
     socket.on('fart', () => {
@@ -87,6 +107,39 @@ function createNewGame() {
         frameCount: 0,
         interval: null
     };
+}
+
+function killPlayer(gameState, playerId) {
+    const player = gameState.players[playerId];
+    
+    
+    if (gameState.mode === 'offline') {
+        io.to(playerId).emit('gameOver', { score: player.score });
+        delete gameState.players[playerId]; 
+    } 
+    else {
+        player.score = 0;
+        player.velocity = 0;
+        player.y = 200; 
+        player.x = 100;
+        
+        player.isAlive = false; 
+
+        // Revive with GHOST MODE
+        setTimeout(() => {
+            if (gameState.players[playerId]) {
+                const p = gameState.players[playerId];
+                p.isAlive = true;
+                p.isInvulnerable = true;
+
+                setTimeout(() => {
+                    if (gameState.players[playerId]) {
+                        gameState.players[playerId].isInvulnerable = false;
+                    }
+                }, 3000);
+            }
+        }, 500);
+    }
 }
 
 function startGameLoop(roomName) {
@@ -141,7 +194,7 @@ function runGame(gameState) {
             continue;
         }
 
-        const playerHitbox = { x: player.x + 10, y: player.y + 10, w: 25, h: 25 }; // Shrink hitbox slightly for fairness
+        const playerHitbox = { x: player.x + 10, y: player.y + 10, w: 25, h: 25 };
 
         for (const pipe of gameState.pipes) {
             
@@ -159,7 +212,7 @@ function runGame(gameState) {
                     playerHitbox.y < pipe.topHeight || 
                     playerHitbox.y + playerHitbox.h > pipe.topHeight + PIPE_GAP
                 ) {
-                    if(player.isAlive){
+                    if(player.isAlive && !player.isInvulnerable){ 
                         killPlayer(gameState, playerId);
                     }
                 }
@@ -186,15 +239,6 @@ function updatePipes(gameState, width, height, pipeWidth, pipeGap) {
     }
 
     gameState.pipes = gameState.pipes.filter(pipe => pipe.x + pipeWidth > 0);
-}
-
-function killPlayer(gameState, playerId) {
-    const player = gameState.players[playerId];
-    player.isAlive = false;
-    
-    delete gameState.players[playerId]; 
-    console.log(`Game Over: ${player.username}`);
-
 }
 
 function getRandomColor() {
